@@ -55,81 +55,118 @@ class Player {
 const Player1 = new Player('Jeff');
 const Player2 = new Player('Stan');
 
-
 //holds the name of the current player & set it to Player1.name
 let currentPlayer = Player1.name //Player2.name
+document.getElementById('playerName').innerText = currentPlayer
 console.log(currentPlayer);
-//holds the value of the current word from the WordArray
-let currentWord = WordArray[Math.floor(Math.random() * WordArray.length )].wordItem
-//holds the value of the current word from the WordArray
-let currentWordHint = WordArray[Math.floor(Math.random() * WordArray.length )].hint
 
-// console.log(currentWord, currentWordHint);
+// randomly select a word
+const currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )];
+
+// holds the value of the current word from the WordArray
+let currentWordName = currentWord.wordItem
+
+//holds the value of the current word from the WordArray
+let currentWordHint = currentWord.hint
+document.getElementById('wordHint').innerText = currentWordHint;
+
+console.log(currentWordName, currentWordHint);
 
 //boolean that shows the current state of the guess 
 let currentGuess = true;
+
+//
 
 //method that changes to the next Player based on who is the current Player
 function changePlayer() {
     if(!currentGuess && currentPlayer === Player1.name) {
         currentPlayer = Player2.name;
+        document.getElementById('playerName').innerText = currentPlayer
     } else if (!currentGuess && currentPlayer === Player2.name) {
         currentPlayer = Player1.name;
+        document.getElementById('playerName').innerText = currentPlayer
     }
 }
 
-currentGuess = false;
-changePlayer();
-console.log(currentPlayer);
-
 // create an current Alphabet array, where you can easily change words to alphabets 
 // of different languages
-const engAlphabet = ['a', 'b','c','d','e','f','g','h','i','j','k','l','m',
-'n','o','p','q','r','s','t','u','v','w','x','y','z',]
+const engAlphabet = ['A', 'B','C','D','E','F','G','H','I','J','K','L','M',
+'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+
+//put the DIV for the buttonLetters in a variable
+let buttonLetters = document.querySelector('.buttonLetters');
 
 //create the the buttons of the letters by looping thru the on 
 // the current Alphabet array  
-function createAlphabetButtons (arr) {
-    //put the DIV for the buttonLetters in a variable
-    let buttonLetters = document.getElementsByClassName('buttonLetters');
+function createAlphabetButtons (arr) {    
+    //put the relevant class, ID, value for each button and append it to parent DIV
     arr.forEach( (letter) => {
         let buttonEl = document.createElement("BUTTON");
-        buttonEl.classList.add("letter-"+letter);
+        buttonEl.classList.add("letter");
+        buttonEl.id = "letter-"+letter;
         buttonEl.setAttribute("value",letter);
         buttonEl.innerText = letter;
         buttonLetters.appendChild(buttonEl);
     });
+    // console.log(buttonLetters)
 }
 
 createAlphabetButtons(engAlphabet);
 
-// create the word on the screen by using appendChild to make Li's with 
+// create the Puzzle word on the screen by using appendChild to make divs with 
 // bold borders to hold each letter word strings
+// it will take 
+function createPuzzleWord() {
+    // take the currentWord and make a DIV for each one 
+    // give each div a id of position-id, i.e. position-0, to identify each position where the letter
+    // should be for matching later
+    let puzzleWordDivEl = document.querySelector('.puzzleWord');
+    for(let i = 0; i<currentWordName.length; i++){
+        let puzzleWordLiLetterEl = document.createElement("li");
+        puzzleWordLiLetterEl.id = "position-"+i;
+        puzzleWordLiLetterEl.classList.add("puzzleWordLetter");
+        puzzleWordDivEl.appendChild(puzzleWordLiLetterEl)
+    };    
+}
 
-//addEventListener for choosing a letter, it will call 
-// pickLetter function
-
-
-
-
+createPuzzleWord();
+//addEventListener to partentDiv for choosing a letter for each button, it will call 
+// guessLetter function
+buttonLetters.addEventListener('click', e => {
+// console.dir(e.target);
+//if a button has been selected, then proceed w/next steps
+if (e.target.localName === 'button') {
+    //call pickeLetter function
+    // pass in letter value into the function
+    // console.log(e.target.value)
+    guessLetter(e.target.value);
+}
+});
 
 //Notes
 // the click listener will call the pickLetter function which will
-// check if the targeted letter is in the currentWordto the div for the
+// check if the targeted letter is in the currentWordName the div for the
 // appropiate letter or it will say -- that letter is wrong
 // if the letter is there , it will place it in the correct div location
 
-function pickLetter(letter) {
+function guessLetter(letter) {
     // check if the letter is available
-        if (currentWord.indexOf(letter) > 0 ) {  
-        return letter;
-        //later set the Letter's index to it's position in the div based on class
-        } else {
-            //change the div or span to say wrong letter on website
-            //but for now put a console.log message to test functionality
-            console.log ('That letter is wrong');
+        if (currentWordName.toLowerCase().indexOf(letter.toLowerCase()) >= 0 ) {  
+            //loop thru the word and set the innerText for each matching letter
+            for(let i=0; i<currentWordName.length; i++) {
+                if(currentWordName[i].toLowerCase() === letter.toLowerCase()) {
+                //console.log(currentWord[i], letter);
+                  document.getElementById("position-"+i).innerText = letter;  
+                  // Let the user know on the webpage
+                  document.getElementById("guessResults").innerText = "Good Guess";
+                }
+            }
+        } else { //the letter isn't there
+            // Let the user know on the webpage
+            document.getElementById("guessResults").innerText ='That letter is wrong';
+            //set the Guess Flag to false
+            currentGuess = false;
+            //change Player
+            changePlayer();
         }
 }
-
-
-
