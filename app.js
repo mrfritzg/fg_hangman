@@ -70,17 +70,18 @@ playerNameEl.innerText = currentPlayer
 console.log(currentPlayer);
 
 // randomly select a word
-const currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )];
+// const currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )];
+let currentWord;//=  WordArray[Math.floor(Math.random() * WordArray.length )];
 
 // holds the value of the current word
-let currentWordName = currentWord.wordItem
+let currentWordName;// = currentWord.wordItem
 
-//holds the value of the current word hint from the WordArray
-let currentWordHint = currentWord.hint
-let wordHintEl = document.getElementById('wordHint');
-wordHintEl.innerText = currentWordHint;
+// holds the value of the current word hint from the WordArray
+let currentWordHint ;//= currentWord.hint
+let wordHintEl;// = document.getElementById('wordHint');
+// wordHintEl.innerText = currentWordHint;
 
-console.log(currentWordName, currentWordHint);
+// console.log(currentWordName, currentWordHint);
 
 //boolean that shows the current state of the guess 
 let currentGuess = true;
@@ -89,7 +90,7 @@ let currentGuess = true;
 let guessResultsEL = document.getElementById("guessResults");
 
 //boolean that shows if the Game is still running
-let gameOn = true;
+let gameOn;// = true;
 
 //keep track of the correct guesses in an array
 //only increment this counter when the correct guess is found
@@ -98,7 +99,6 @@ let correctGuessCounter = 0;
 //variable that keeps track of the game status
 let gameStatusEl = document.getElementById('gameStatus');
 
-
 // create an current Alphabet array, where you can easily change words to alphabets 
 // of different languages
 const engAlphabet = ['A', 'B','C','D','E','F','G','H','I','J','K','L','M',
@@ -106,6 +106,33 @@ const engAlphabet = ['A', 'B','C','D','E','F','G','H','I','J','K','L','M',
 
 //put the PARENT DIV for the buttonLetters in a variable
 let buttonLetters = document.querySelector('.buttonLetters');
+
+//put the Parent UL for the puzzle in a variable
+let puzzleWordDivEl = document.querySelector('.puzzleWord');
+
+//put the reset button in a variable
+let resetGameBtnEL = document.getElementById("resetGame");
+
+/***********************
+**** EVENT LISTENER ****
+************************/
+//addEventListener to partentDiv for choosing a letter for each button, it will call 
+// guessLetter function
+buttonLetters.addEventListener('click', e => {
+    //  console.dir(e.target);
+    //if a button has been selected, then proceed w/next steps
+    if (e.target.localName === 'button') {
+        //call pickeLetter function
+        // pass in letter value into the function
+        // console.log(e.target.value)
+        guessLetter(e.target.value);
+    
+    }
+    });
+
+    //ADD addEventListener for reset game button
+resetGameBtnEL.addEventListener('click', playHangMan);
+
 
 /******************
 **** FUNCTIONS ****
@@ -137,17 +164,16 @@ function createAlphabetButtons (arr) {
     // console.log(buttonLetters)
 }
 
-createAlphabetButtons(engAlphabet);
+// createAlphabetButtons(engAlphabet);
 
 // create the Puzzle word on the screen by using appendChild to make divs with 
 // bold borders to hold each letter word strings
 // it will take 
-function createPuzzleWord() {
+function createPuzzleWord(word) {
     // take the currentWord and make a DIV for each one 
     // give each div a id of position-id, i.e. position-0, to identify each position where the letter
     // should be for matching later
-    let puzzleWordDivEl = document.querySelector('.puzzleWord');
-    for(let i = 0; i<currentWordName.length; i++){
+    for(let i = 0; i < word.length; i++){
         let puzzleWordLiLetterEl = document.createElement("li");
         puzzleWordLiLetterEl.id = "position-"+i;
         puzzleWordLiLetterEl.classList.add("puzzleWordLetter");
@@ -155,21 +181,7 @@ function createPuzzleWord() {
     };    
 }
 
-createPuzzleWord();
-
-//addEventListener to partentDiv for choosing a letter for each button, it will call 
-// guessLetter function
-buttonLetters.addEventListener('click', e => {
-//  console.dir(e.target);
-//if a button has been selected, then proceed w/next steps
-if (e.target.localName === 'button') {
-    //call pickeLetter function
-    // pass in letter value into the function
-    // console.log(e.target.value)
-    guessLetter(e.target.value);
-
-}
-});
+// createPuzzleWord(currentWordName);
 
 // the click listener will call the guessLetter function which will
 // check if the targeted letter is in the currentWordName string the div for the
@@ -242,5 +254,47 @@ if(correctGuessCounter === currentWordName.length) {
 
 }
 
-// reset game function
-//
+//play functions -- calls all of the functions and sets up website
+function playHangMan() {
+    //resets the game back to Player1 
+    currentPlayer = Player1.name
+    playerNameEl.innerText = currentPlayer;
+
+    //remove all childNodes from alphabet buttons if they previously created
+    while (buttonLetters.hasChildNodes()) {
+    buttonLetters.removeChild(buttonLetters.firstChild);
+    }
+
+    //remove all childNodes from puzzle words if they previously created
+    while (puzzleWordDivEl.hasChildNodes()) {
+    puzzleWordDivEl.removeChild(puzzleWordDivEl.firstChild);
+    }
+
+    // randomly select a word
+    currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )]
+
+    // holds the value of the current word
+    currentWordName = currentWord.wordItem
+
+    //holds the value of the current word hint from the WordArray
+    currentWordHint = currentWord.hint
+    wordHintEl = document.getElementById('wordHint');
+    wordHintEl.innerText = currentWordHint;
+    console.log(currentWordName, currentWordHint);
+
+    //boolean that shows if the Game is still running
+    gameOn = true;
+
+    //keep track of the correct guesses in an array
+    //only increment this counter when the correct guess is found
+    correctGuessCounter = 0;
+
+    //run the function to create the alphabet buttons
+    createAlphabetButtons(engAlphabet);
+
+    //run the function to create the puzzle
+    createPuzzleWord(currentWordName);
+}
+
+//CALLING THIS FUNCTION STARTS THE GAME
+playHangMan();
