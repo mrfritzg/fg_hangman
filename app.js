@@ -1,6 +1,8 @@
 // HANDMAN PROJECT
 
-
+/******************
+****  CLASSES  ****
+*******************/
 // create the Word class that will create & hold the word
 class Word {
     constructor( wordItem, hint) {
@@ -32,7 +34,7 @@ WordArray.push(Word6);
 const Word7 = new Word('supermarket', 'type of grocery store');
 WordArray.push(Word7);
 
-const Word8 = new Word('courage', 'sleeps in the jungle');
+const Word8 = new Word('lion', 'sleeps in the jungle');
 WordArray.push(Word8);
 
 const Word9 = new Word('teacher', 'works at a school');
@@ -40,6 +42,9 @@ WordArray.push(Word9);
 
 const Word10 = new Word('television', 'type of media');
 WordArray.push(Word10);
+
+const Word11 = new Word('courage', 'The cowardly lion needed this');
+WordArray.push(Word11);
 
 // console.log(WordArray);
 
@@ -51,50 +56,71 @@ class Player {
    
 }
 
+/******************
+**** VARIABLES ****
+*******************/
 //Display Player names on game page
 const Player1 = new Player('Jeff');
 const Player2 = new Player('Stan');
 
 //holds the name of the current player & set it to Player1.name
 let currentPlayer = Player1.name //Player2.name
-document.getElementById('playerName').innerText = currentPlayer
+let playerNameEl = document.getElementById('playerName');
+playerNameEl.innerText = currentPlayer
 console.log(currentPlayer);
 
 // randomly select a word
 const currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )];
 
-// holds the value of the current word from the WordArray
+// holds the value of the current word
 let currentWordName = currentWord.wordItem
 
-//holds the value of the current word from the WordArray
+//holds the value of the current word hint from the WordArray
 let currentWordHint = currentWord.hint
-document.getElementById('wordHint').innerText = currentWordHint;
+let wordHintEl = document.getElementById('wordHint');
+wordHintEl.innerText = currentWordHint;
 
 console.log(currentWordName, currentWordHint);
 
 //boolean that shows the current state of the guess 
 let currentGuess = true;
 
-//
+//Guess results for the webpage
+let guessResultsEL = document.getElementById("guessResults");
 
-//method that changes to the next Player based on who is the current Player
-function changePlayer() {
-    if(!currentGuess && currentPlayer === Player1.name) {
-        currentPlayer = Player2.name;
-        document.getElementById('playerName').innerText = currentPlayer
-    } else if (!currentGuess && currentPlayer === Player2.name) {
-        currentPlayer = Player1.name;
-        document.getElementById('playerName').innerText = currentPlayer
-    }
-}
+//boolean that shows if the Game is still running
+let gameOn = true;
+
+//keep track of the correct guesses in an array
+//only increment this counter when the correct guess is found
+let correctGuessCounter = 0;
+
+//variable that keeps track of the game status
+let gameStatusEl = document.getElementById('gameStatus');
+
 
 // create an current Alphabet array, where you can easily change words to alphabets 
 // of different languages
 const engAlphabet = ['A', 'B','C','D','E','F','G','H','I','J','K','L','M',
 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
-//put the DIV for the buttonLetters in a variable
+//put the PARENT DIV for the buttonLetters in a variable
 let buttonLetters = document.querySelector('.buttonLetters');
+
+/******************
+**** FUNCTIONS ****
+*******************/
+
+//method that changes to the next Player based on who is the current Player
+function changePlayer() {
+    if(!currentGuess && currentPlayer === Player1.name) {
+        currentPlayer = Player2.name;
+        playerNameEl.innerText = currentPlayer
+    } else if (!currentGuess && currentPlayer === Player2.name) {
+        currentPlayer = Player1.name;
+        playerNameEl.innerText = currentPlayer
+    }
+}
 
 //create the the buttons of the letters by looping thru the on 
 // the current Alphabet array  
@@ -104,7 +130,7 @@ function createAlphabetButtons (arr) {
         let buttonEl = document.createElement("BUTTON");
         buttonEl.classList.add("letter");
         buttonEl.id = "letter-"+letter;
-        buttonEl.setAttribute("value",letter);
+        buttonEl.value = letter;
         buttonEl.innerText = letter;
         buttonLetters.appendChild(buttonEl);
     });
@@ -130,22 +156,23 @@ function createPuzzleWord() {
 }
 
 createPuzzleWord();
+
 //addEventListener to partentDiv for choosing a letter for each button, it will call 
 // guessLetter function
 buttonLetters.addEventListener('click', e => {
-// console.dir(e.target);
+//  console.dir(e.target);
 //if a button has been selected, then proceed w/next steps
 if (e.target.localName === 'button') {
     //call pickeLetter function
     // pass in letter value into the function
     // console.log(e.target.value)
     guessLetter(e.target.value);
+
 }
 });
 
-//Notes
-// the click listener will call the pickLetter function which will
-// check if the targeted letter is in the currentWordName the div for the
+// the click listener will call the guessLetter function which will
+// check if the targeted letter is in the currentWordName string the div for the
 // appropiate letter or it will say -- that letter is wrong
 // if the letter is there , it will place it in the correct div location
 
@@ -158,15 +185,37 @@ function guessLetter(letter) {
                 //console.log(currentWord[i], letter);
                   document.getElementById("position-"+i).innerText = letter;  
                   // Let the user know on the webpage
-                  document.getElementById("guessResults").innerText = "Good Guess";
+                  guessResultsEL.innerText = "Good Guess";
+                  //only increment this counter when the correct guess is found
+                  correctGuessCounter+=1;
+                  //check if the puzzle has been solved
+                  isThePuzzleSolved();
+                  console.log(correctGuessCounter);
+                  //disable the button for the letter after it has been correctly guessed
+                  //which will prevent the button from being pressed multiple times
+                 document.getElementById("letter-"+letter).disabled = true;
                 }
             }
         } else { //the letter isn't there
             // Let the user know on the webpage
-            document.getElementById("guessResults").innerText ='That letter is wrong';
+            guessResultsEL.innerText ='Bad Guess!';
             //set the Guess Flag to false
             currentGuess = false;
             //change Player
             changePlayer();
         }
+}
+
+// the isThePuzzleSolved function will check if the puzzle has been solved
+function isThePuzzleSolved() {
+    //check if the correctGuess counter equals to number of letters in the word
+if(correctGuessCounter === currentWordName.length) {
+    gameStatusEl.innerText = currentPlayer + ' IS THE WINNER!. Press RESET to start a new Game';
+    //blankout the current player and guess status
+    playerNameEl.innerText = '';
+    guessResultsEL.innerText = '';
+    gameOn = false;
+    //ADD MORE CODE TO disable the game the page
+}
+
 }
