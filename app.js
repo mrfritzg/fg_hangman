@@ -175,32 +175,44 @@ if (e.target.localName === 'button') {
 // check if the targeted letter is in the currentWordName string the div for the
 // appropiate letter or it will say -- that letter is wrong
 // if the letter is there , it will place it in the correct div location
-
 function guessLetter(letter) {
     // check if the letter is available
         if (currentWordName.toLowerCase().indexOf(letter.toLowerCase()) >= 0 ) {  
+            
             //loop thru the word and set the innerText for each matching letter
             for(let i=0; i<currentWordName.length; i++) {
                 if(currentWordName[i].toLowerCase() === letter.toLowerCase()) {
                 //console.log(currentWord[i], letter);
-                  document.getElementById("position-"+i).innerText = letter;  
+                
+                //set the blank space to the guessed letter  
+                document.getElementById("position-"+i).innerText = letter;  
+                  
                   // Let the user know on the webpage
                   guessResultsEL.innerText = "Good Guess";
+                  
                   //only increment this counter when the correct guess is found
                   correctGuessCounter+=1;
-                  //check if the puzzle has been solved
-                  isThePuzzleSolved();
                   console.log(correctGuessCounter);
+                  
                   //disable the button for the letter after it has been correctly guessed
                   //which will prevent the button from being pressed multiple times
                  document.getElementById("letter-"+letter).disabled = true;
+                  
+                  //check if the puzzle has been solved
+                  isThePuzzleSolved();
                 }
             }
         } else { //the letter isn't there
             // Let the user know on the webpage
             guessResultsEL.innerText ='Bad Guess!';
+            
+            //disable the button for the letter after it has been correctly guessed
+            //which will prevent the button from being pressed multiple times
+            document.getElementById("letter-"+letter).disabled = true;
+            
             //set the Guess Flag to false
             currentGuess = false;
+           
             //change Player
             changePlayer();
         }
@@ -211,11 +223,24 @@ function isThePuzzleSolved() {
     //check if the correctGuess counter equals to number of letters in the word
 if(correctGuessCounter === currentWordName.length) {
     gameStatusEl.innerText = currentPlayer + ' IS THE WINNER!. Press RESET to start a new Game';
+    
     //blankout the current player and guess status
     playerNameEl.innerText = '';
     guessResultsEL.innerText = '';
+    
+    //set GameOn to false
     gameOn = false;
+    
+    //disable all the buttons
+    const lettersBtns = document.getElementsByClassName('letter');
+    for (let btnitems of lettersBtns) {
+        btnitems.disabled = true;
+    }
     //ADD MORE CODE TO disable the game the page
+
 }
 
 }
+
+// reset game function
+//
