@@ -5,12 +5,12 @@
 *******************/
 // create the Word class that will create & hold the word
 class Word {
-    constructor( wordItem, hint) {
-    this.wordItem = wordItem ;
-    this.hint = hint || '';
+    constructor(wordItem, hint) {
+        this.wordItem = wordItem;
+        this.hint = hint || '';
     }
 }
- 
+
 //put the words into an array of Objects
 const WordArray = [];
 const Word1 = new Word('video', 'type of media');
@@ -46,14 +46,26 @@ WordArray.push(Word10);
 const Word11 = new Word('courage', 'The cowardly lion needed this');
 WordArray.push(Word11);
 
+const Word12 = new Word('Triceratops', 'Dinosaur with three horns');
+WordArray.push(Word12);
+
+const Word13 = new Word('Pacific', 'the largest ocean');
+WordArray.push(Word13);
+
+const Word14 = new Word('elephant', 'the largest land mammal');
+WordArray.push(Word14);
+
+const Word15 = new Word('whale', 'the largest sea animal');
+WordArray.push(Word15);
+
 // console.log(WordArray);
 
 class Player {
     constructor(name) {
-        this.name = name  || 'Player1'
+        this.name = name || 'Player1'
         this.points = 0;
     }
-   
+
 }
 
 /******************
@@ -77,7 +89,7 @@ let currentWord;//=  WordArray[Math.floor(Math.random() * WordArray.length )];
 let currentWordName;// = currentWord.wordItem
 
 // holds the value of the current word hint from the WordArray
-let currentWordHint ;//= currentWord.hint
+let currentWordHint;//= currentWord.hint
 let wordHintEl;// = document.getElementById('wordHint');
 // wordHintEl.innerText = currentWordHint;
 
@@ -101,8 +113,14 @@ let gameStatusEl = document.getElementById('gameStatus');
 
 // create an current Alphabet array, where you can easily change words to alphabets 
 // of different languages
-const engAlphabet = ['A', 'B','C','D','E','F','G','H','I','J','K','L','M',
-'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+const engAlphabet = [
+    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+    'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
+    'Z', 'X', 'C', 'V', 'B', 'N', 'M'
+]
+
+// ['A','B','C','D','E','F','G','H','I','J','K','L','M',
+// 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 //put the PARENT DIV for the buttonLetters in a variable
 let buttonLetters = document.querySelector('.buttonLetters');
@@ -126,11 +144,11 @@ buttonLetters.addEventListener('click', e => {
         // pass in letter value into the function
         // console.log(e.target.value)
         guessLetter(e.target.value);
-    
-    }
-    });
 
-    //ADD addEventListener for reset game button
+    }
+});
+
+//ADD addEventListener for reset game button
 resetGameBtnEL.addEventListener('click', playHangMan);
 
 
@@ -140,7 +158,7 @@ resetGameBtnEL.addEventListener('click', playHangMan);
 
 //method that changes to the next Player based on who is the current Player
 function changePlayer() {
-    if(!currentGuess && currentPlayer === Player1.name) {
+    if (!currentGuess && currentPlayer === Player1.name) {
         currentPlayer = Player2.name;
         playerNameEl.innerText = currentPlayer
     } else if (!currentGuess && currentPlayer === Player2.name) {
@@ -151,12 +169,15 @@ function changePlayer() {
 
 //create the the buttons of the letters by looping thru the on 
 // the current Alphabet array  
-function createAlphabetButtons (arr) {    
+function createAlphabetButtons(arr) {
     //put the relevant class, ID, value for each button and append it to parent DIV
-    arr.forEach( (letter) => {
+    arr.forEach((letter) => {
+        if (letter === 'A' || letter === 'Z' )  {
+            buttonLetters.innerHTML += "<br>"
+        }
         let buttonEl = document.createElement("BUTTON");
         buttonEl.classList.add("letter");
-        buttonEl.id = "letter-"+letter;
+        buttonEl.id = "letter-" + letter;
         buttonEl.value = letter;
         buttonEl.innerText = letter;
         buttonLetters.appendChild(buttonEl);
@@ -173,12 +194,12 @@ function createPuzzleWord(word) {
     // take the currentWord and make a DIV for each one 
     // give each div a id of position-id, i.e. position-0, to identify each position where the letter
     // should be for matching later
-    for(let i = 0; i < word.length; i++){
+    for (let i = 0; i < word.length; i++) {
         let puzzleWordLiLetterEl = document.createElement("li");
-        puzzleWordLiLetterEl.id = "position-"+i;
+        puzzleWordLiLetterEl.id = "position-" + i;
         puzzleWordLiLetterEl.classList.add("puzzleWordLetter");
         puzzleWordDivEl.appendChild(puzzleWordLiLetterEl)
-    };    
+    };
 }
 
 // createPuzzleWord(currentWordName);
@@ -189,68 +210,68 @@ function createPuzzleWord(word) {
 // if the letter is there , it will place it in the correct div location
 function guessLetter(letter) {
     // check if the letter is available
-        if (currentWordName.toLowerCase().indexOf(letter.toLowerCase()) >= 0 ) {  
-            
-            //loop thru the word and set the innerText for each matching letter
-            for(let i=0; i<currentWordName.length; i++) {
-                if(currentWordName[i].toLowerCase() === letter.toLowerCase()) {
+    if (currentWordName.toLowerCase().indexOf(letter.toLowerCase()) >= 0) {
+
+        //loop thru the word and set the innerText for each matching letter
+        for (let i = 0; i < currentWordName.length; i++) {
+            if (currentWordName[i].toLowerCase() === letter.toLowerCase()) {
                 //console.log(currentWord[i], letter);
-                
+
                 //set the blank space to the guessed letter  
-                document.getElementById("position-"+i).innerText = letter;  
-                  
-                  // Let the user know on the webpage
-                  guessResultsEL.innerText = "Good Guess";
-                  
-                  //only increment this counter when the correct guess is found
-                  correctGuessCounter+=1;
-                  console.log(correctGuessCounter);
-                  
-                  //disable the button for the letter after it has been correctly guessed
-                  //which will prevent the button from being pressed multiple times
-                 document.getElementById("letter-"+letter).disabled = true;
-                  
-                  //check if the puzzle has been solved
-                  isThePuzzleSolved();
-                }
+                document.getElementById("position-" + i).innerText = letter;
+
+                // Let the user know on the webpage
+                guessResultsEL.innerText = "Good Guess";
+
+                //only increment this counter when the correct guess is found
+                correctGuessCounter += 1;
+                console.log(correctGuessCounter);
+
+                //disable the button for the letter after it has been correctly guessed
+                //which will prevent the button from being pressed multiple times
+                document.getElementById("letter-" + letter).disabled = true;
+
+                //check if the puzzle has been solved
+                isThePuzzleSolved();
             }
-        } else { //the letter isn't there
-            // Let the user know on the webpage
-            guessResultsEL.innerText ='Bad Guess!';
-            
-            //disable the button for the letter after it has been correctly guessed
-            //which will prevent the button from being pressed multiple times
-            document.getElementById("letter-"+letter).disabled = true;
-            
-            //set the Guess Flag to false
-            currentGuess = false;
-           
-            //change Player
-            changePlayer();
         }
+    } else { //the letter isn't there
+        // Let the user know on the webpage
+        guessResultsEL.innerText = 'Bad Guess!';
+
+        //disable the button for the letter after it has been correctly guessed
+        //which will prevent the button from being pressed multiple times
+        document.getElementById("letter-" + letter).disabled = true;
+
+        //set the Guess Flag to false
+        currentGuess = false;
+
+        //change Player
+        changePlayer();
+    }
 }
 
 // the isThePuzzleSolved function will check if the puzzle has been solved
 function isThePuzzleSolved() {
     //check if the correctGuess counter equals to number of letters in the word
-if(correctGuessCounter === currentWordName.length) {
-    gameStatusEl.innerText = currentPlayer + ' IS THE WINNER!. Press RESET to start a new Game';
-    
-    //blankout the current player and guess status
-    playerNameEl.innerText = '';
-    guessResultsEL.innerText = '';
-    
-    //set GameOn to false
-    gameOn = false;
-    
-    //disable all the buttons
-    const lettersBtns = document.getElementsByClassName('letter');
-    for (let btnitems of lettersBtns) {
-        btnitems.disabled = true;
-    }
-    //ADD MORE CODE TO disable the game the page
+    if (correctGuessCounter === currentWordName.length) {
+        gameStatusEl.innerText = currentPlayer + ' IS THE WINNER!. Press RESET to start a new Game';
 
-}
+        //blankout the current player and guess status
+        playerNameEl.innerText = '';
+        guessResultsEL.innerText = '';
+
+        //set GameOn to false
+        gameOn = false;
+
+        //disable all the buttons
+        const lettersBtns = document.getElementsByClassName('letter');
+        for (let btnitems of lettersBtns) {
+            btnitems.disabled = true;
+        }
+        //ADD MORE CODE TO disable the game the page
+
+    }
 
 }
 
@@ -262,19 +283,19 @@ function playHangMan() {
 
     //remove all childNodes from alphabet buttons if they previously created
     while (buttonLetters.hasChildNodes()) {
-    buttonLetters.removeChild(buttonLetters.firstChild);
+        buttonLetters.removeChild(buttonLetters.firstChild);
     }
 
     //remove all childNodes from puzzle words if they previously created
     while (puzzleWordDivEl.hasChildNodes()) {
-    puzzleWordDivEl.removeChild(puzzleWordDivEl.firstChild);
+        puzzleWordDivEl.removeChild(puzzleWordDivEl.firstChild);
     }
 
     // randomly select a word
-    currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )]
+    currentWord = WordArray[Math.floor(Math.random() * WordArray.length)];
 
     // holds the value of the current word
-    currentWordName = currentWord.wordItem
+    currentWordName = currentWord.wordItem;
 
     //holds the value of the current word hint from the WordArray
     currentWordHint = currentWord.hint
