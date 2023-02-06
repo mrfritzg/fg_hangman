@@ -77,9 +77,21 @@ const Player2 = new Player('Stan');
 
 //holds the name of the current player & set it to Player1.name
 let currentPlayer = Player1.name //Player2.name
-let playerNameEl = document.getElementById('playerName');
-playerNameEl.innerText = currentPlayer
+// let playerNameEl = document.getElementById('playerName');
+// playerNameEl.innerText = currentPlayer
 console.log(currentPlayer);
+
+//holds the elements for the players
+let player1NameEl = document.getElementById('player1Name');
+player1NameEl.innerText = Player1.name;
+let player1El = document.getElementById('player1');
+
+let player2NameEl = document.getElementById('player2Name');
+player2NameEl.innerText = Player2.name;
+let player2El = document.getElementById('player2');
+
+//add current class to Player1 by default
+player1El.classList.add('currentPlayer');
 
 // randomly select a word
 // const currentWord =  WordArray[Math.floor(Math.random() * WordArray.length )];
@@ -104,23 +116,32 @@ let guessResultsEL = document.getElementById("guessResults");
 //boolean that shows if the Game is still running
 let gameOn;// = true;
 
-//keep track of the correct guesses in an array
-//only increment this counter when the correct guess is found
+//keep track of the correct & bad guesses
 let correctGuessCounter = 0;
+let badGuessCounter = 0;
 
 //variable that keeps track of the game status
 let gameStatusEl = document.getElementById('gameStatus');
 
+//variable that sets the hangman image
+let hangmanImgEl = document.getElementById('hangmanImg');
+
+
 // create an current Alphabet array, where you can easily change words to alphabets 
 // of different languages
-const engAlphabet = [
-    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
-    'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
-    'Z', 'X', 'C', 'V', 'B', 'N', 'M'
-]
+const engAlphabet =
+    [
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    ]
 
-// ['A','B','C','D','E','F','G','H','I','J','K','L','M',
-// 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+// [
+//     'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+//     'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
+//     'Z', 'X', 'C', 'V', 'B', 'N', 'M'
+// ]
+
+
 
 //put the PARENT DIV for the buttonLetters in a variable
 let buttonLetters = document.querySelector('.buttonLetters');
@@ -159,11 +180,19 @@ resetGameBtnEL.addEventListener('click', playHangMan);
 //method that changes to the next Player based on who is the current Player
 function changePlayer() {
     if (!currentGuess && currentPlayer === Player1.name) {
+        //set the new  current player
         currentPlayer = Player2.name;
-        playerNameEl.innerText = currentPlayer
+        //remove the current Player class from previous player
+        // & add it to the new current Player
+        player1El.classList.remove('currentPlayer');
+        player2El.classList.add('currentPlayer');
+        //playerNameEl.innerText = currentPlayer
+
     } else if (!currentGuess && currentPlayer === Player2.name) {
         currentPlayer = Player1.name;
-        playerNameEl.innerText = currentPlayer
+        //playerNameEl.innerText = currentPlayer
+        player2El.classList.remove('currentPlayer');
+        player1El.classList.add('currentPlayer');
     }
 }
 
@@ -172,9 +201,9 @@ function changePlayer() {
 function createAlphabetButtons(arr) {
     //put the relevant class, ID, value for each button and append it to parent DIV
     arr.forEach((letter) => {
-        if (letter === 'A' || letter === 'Z' )  {
-            buttonLetters.innerHTML += "<br>"
-        }
+        // if (letter === 'A' || letter === 'Z') {
+        //     buttonLetters.innerHTML += "<br>"
+        // }
         let buttonEl = document.createElement("BUTTON");
         buttonEl.classList.add("letter");
         buttonEl.id = "letter-" + letter;
@@ -241,10 +270,14 @@ function guessLetter(letter) {
 
         //disable the button for the letter after it has been correctly guessed
         //which will prevent the button from being pressed multiple times
-        document.getElementById("letter-" + letter).disabled = true;
+        // document.getElementById("letter-" + letter).disabled = true;
 
         //set the Guess Flag to false
         currentGuess = false;
+
+        //increment bad guess counter
+        badGuessCounter += 1;
+        badGuess(badGuessCounter)
 
         //change Player
         changePlayer();
@@ -255,31 +288,105 @@ function guessLetter(letter) {
 function isThePuzzleSolved() {
     //check if the correctGuess counter equals to number of letters in the word
     if (correctGuessCounter === currentWordName.length) {
+        gameStatusEl.classList.add('winner');
         gameStatusEl.innerText = currentPlayer + ' IS THE WINNER!. Press RESET to start a new Game';
 
         //blankout the current player and guess status
-        playerNameEl.innerText = '';
+        // playerNameEl.innerText = '';
         guessResultsEL.innerText = '';
 
         //set GameOn to false
         gameOn = false;
 
         //disable all the buttons
-        const lettersBtns = document.getElementsByClassName('letter');
-        for (let btnitems of lettersBtns) {
-            btnitems.disabled = true;
-        }
+        disableAllBtns();
         //ADD MORE CODE TO disable the game the page
 
     }
 
 }
 
+// function for bad guesses that changes currentGuess flag to false
+// updates the hangMan image
+// if all of the hangman images appear then will have to call the 
+// gameOver function to end the game
+function badGuess(counter) {
+    switch (counter) {
+        case 1:
+            // code block
+            hangmanImgEl.src = "./images/hangman1.jpg";
+            break;
+        case 2:
+            // code block
+            hangmanImgEl.src = "./images/hangman2.jpg";
+            break;
+        case 3:
+            // code block
+            hangmanImgEl.src = "./images/hangman3.jpg";
+            break;
+        case 4:
+            // code block
+            hangmanImgEl.src = "./images/hangman4.jpg";
+            break;
+        case 5:
+            // code block
+            hangmanImgEl.src = "./images/hangman5.jpg";
+            break;
+        case 6:
+            // code block
+            hangmanImgEl.src = "./images/hangman6.jpg";
+            break;
+        case 7:
+            // code block
+            hangmanImgEl.src = "./images/hangman7.jpg";
+            break;
+        case 8:
+            // code block
+            hangmanImgEl.src = "./images/hangman8.jpg";
+            break;
+        case 9:
+            // code block
+            hangmanImgEl.src = "./images/hangman9.jpg";
+            break;
+        case 10:
+            // code block
+            hangmanImgEl.src = "./images/hangman10.jpg";
+            gameOver()
+            break;
+        default:
+            // code block
+            hangmanImgEl.src = "./images/hangman0.jpg";
+    }
+}
+
+
+
+function gameOver() {
+    //set GameOn to false
+    gameOn = false;
+    disableAllBtns();
+    gameStatusEl.innerText = 'UH OH!-HANGMAN-THE GAME IS OVER!. Press RESET to start a new Game';
+    gameStatusEl.classList.add('loser');
+}
+
+
+//disable all buttons function
+function disableAllBtns() {
+    const lettersBtns = document.getElementsByClassName('letter');
+    for (let btnitems of lettersBtns) {
+        btnitems.disabled = true;
+    }
+}
+
+
 //play functions -- calls all of the functions and sets up website
 function playHangMan() {
     //resets the game back to Player1 
     currentPlayer = Player1.name
-    playerNameEl.innerText = currentPlayer;
+    //adds the currentplayer styles to player1
+    player1El.classList.add('currentPlayer');
+    //removes any currentplayer styles to player2
+    player2El.classList.remove('currentPlayer');
 
     //remove all childNodes from alphabet buttons if they previously created
     while (buttonLetters.hasChildNodes()) {
@@ -290,6 +397,9 @@ function playHangMan() {
     while (puzzleWordDivEl.hasChildNodes()) {
         puzzleWordDivEl.removeChild(puzzleWordDivEl.firstChild);
     }
+
+    gameStatusEl.classList.remove('winner');
+    gameStatusEl.classList.remove('loser');
 
     // randomly select a word
     currentWord = WordArray[Math.floor(Math.random() * WordArray.length)];
@@ -309,6 +419,14 @@ function playHangMan() {
     //keep track of the correct guesses in an array
     //only increment this counter when the correct guess is found
     correctGuessCounter = 0;
+    badGuessCounter = 0;
+
+    //blankout the guess status and game status
+    guessResultsEL.innerText = '';
+    gameStatusEl.innerText = '';
+
+    //reset the hangman image
+    hangmanImgEl.src = "./images/hangman0.jpg";
 
     //run the function to create the alphabet buttons
     createAlphabetButtons(engAlphabet);
