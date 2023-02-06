@@ -8,3 +8,9 @@
     margin: 0 2px;
     /* list-style-type: none; */
 }
+
+#hangManParent {
+    width: 500px;
+    height: 100%;
+    border: 1px solid black;
+}
