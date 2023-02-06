@@ -12,10 +12,9 @@
 
 <body>
     <h1>The HangMan Game</h1>
-    <h2>Welcome</h2>
-    <h3>In order to solve the puzzle, 
-        please click and guess a letter below</h3>
-        <h4>You have 10 Lives or Else!</h4>
+    <h2>In order to solve the puzzle, 
+        please click and guess a letter below</h2>
+        <h3>You have 10 Lives or Else!</h3>
         <div id="hangManParent">
             <div id="hangman">
                 <img id="hangmanImg" src="./images/hangman0.jpg" />
@@ -25,16 +24,14 @@
 
 
     <div class="puzzle">
-        <h3>Puzzle Word</h3>
-        <p>Hint: <span id="wordHint"></span></p>
-        <ul class="puzzleWord"></ul>
+        <!-- <h3>Puzzle Word</h3> -->
+        <h3>Hint: <span id="wordHint"></span></h3>
+        <div class="puzzleWord"></div>
 
-        <h3> The current Player is:</h3>
-       
-        <!--  <span id = "playerName"></span></p> -->
         <div id="players">
-        <p id="player1">Player 1: <span id="player1Name"></span></p>
-        <p id="player2">Player 2: <span id="player2Name"></span></p>
+            <h3> The current Player is:</h3>
+            <p id="player1">Player 1: <span id="player1Name"></span></p>
+            <p id="player2">Player 2: <span id="player2Name"></span></p>
         </div>
         <p id="guessResults"></p>
         <p id="gameStatus"></p>

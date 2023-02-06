@@ -146,7 +146,7 @@ const engAlphabet =
 //put the PARENT DIV for the buttonLetters in a variable
 let buttonLetters = document.querySelector('.buttonLetters');
 
-//put the Parent UL for the puzzle in a variable
+//put the Parent div for the puzzle in a variable
 let puzzleWordDivEl = document.querySelector('.puzzleWord');
 
 //put the reset button in a variable
@@ -223,11 +223,17 @@ function createPuzzleWord(word) {
     // take the currentWord and make a DIV for each one 
     // give each div a id of position-id, i.e. position-0, to identify each position where the letter
     // should be for matching later
+    // for (let i = 0; i < word.length; i++) {
+    //     let puzzleWordLiLetterEl = document.createElement("li");
+    //     puzzleWordLiLetterEl.id = "position-" + i;
+    //     puzzleWordLiLetterEl.classList.add("puzzleWordLetter");
+    //     puzzleWordUlEl.appendChild(puzzleWordLiLetterEl)
+    // };
     for (let i = 0; i < word.length; i++) {
-        let puzzleWordLiLetterEl = document.createElement("li");
-        puzzleWordLiLetterEl.id = "position-" + i;
-        puzzleWordLiLetterEl.classList.add("puzzleWordLetter");
-        puzzleWordDivEl.appendChild(puzzleWordLiLetterEl)
+        let puzzleWordDivLetterEl = document.createElement("div");
+        puzzleWordDivLetterEl.id = "position-" + i;
+        puzzleWordDivLetterEl.classList.add("puzzleWordLetter");
+        puzzleWordDivEl.appendChild(puzzleWordDivLetterEl);
     };
 }
 
@@ -351,6 +357,7 @@ function badGuess(counter) {
         case 10:
             // code block
             hangmanImgEl.src = "./images/hangman10.jpg";
+            //call the gameOver function to end the game
             gameOver()
             break;
         default:
@@ -377,7 +384,6 @@ function disableAllBtns() {
         btnitems.disabled = true;
     }
 }
-
 
 //play functions -- calls all of the functions and sets up website
 function playHangMan() {
