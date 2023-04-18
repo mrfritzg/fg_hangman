@@ -1,5 +1,4 @@
 # HANGMAN Web App Project by Fritz Guerilus
-This is a MVP - Minimum Viable Product for my DOM project
 It is a web app game for Hangman
 It is built with HTML, CSS and Vanilla JavaScript .
 
