@@ -1,6 +1,7 @@
 # HANGMAN Web App Project by Fritz Guerilus
 It is a web app game for Hangman
 It is built with HTML, CSS and Vanilla JavaScript .
+Link -- https://mrfritzg.github.io/fg_hangman/
 
 # GamePlay:
 This is a 2 player game, & uses the default names of Jeff & Stan. Future versions of the game will allow visitors to enter their own names
